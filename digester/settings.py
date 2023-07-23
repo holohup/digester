@@ -3,14 +3,9 @@ from dotenv import find_dotenv, load_dotenv
 import os
 from pathlib import Path
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
+CELERY_BROKER_URL = os.getenv('RABBITMQ_URL', 'amqp://guest:guest@localhost:5672/')
 
 load_dotenv(find_dotenv())
 SECRET_KEY = os.getenv(
@@ -18,7 +13,6 @@ SECRET_KEY = os.getenv(
     'django-insecure-*q(w0o75%gd&+1+%&j004qz5m!07vs*+t)x@qx11967w!wrc3w'
 )
 
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = strtobool(os.getenv('DJANGO_DEBUG_MODE', 'False'))
 
 ALLOWED_HOSTS = []
@@ -36,6 +30,7 @@ INSTALLED_APPS = [
     'news.apps.NewsConfig',
     'api.apps.ApiConfig',
     'rest_framework',
+    'celery',
 ]
 
 MIDDLEWARE = [
@@ -124,6 +119,39 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
+        'rest_framework.permissions.AllowAny',
     ],
 }
+
+AUTH_USER_MODEL = 'news.User'
+
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': True,
+#     'formatters': {
+#         'formatter': {
+#             '()': 'django.utils.log.ServerFormatter',
+#             'format': '[%(name)s %(asctime)s %(filename)s: %(lineno)d - %(funcName)s()] %(message)s',
+#             'datefmt': '%Y-%m-%d %H:%M:%S',
+#         }
+#     },
+#     'handlers': {
+#         'console': {
+#             'level': 'DEBUG',
+#             'class': 'logging.StreamHandler',
+#             'formatter': 'formatter',
+#         },
+#     },
+#     'loggers': {
+#         'django': {
+#             'handlers': ('console',),
+#             'level': 'INFO',
+#             'propagate': False,
+#         },
+#         'django.db.backends': {
+#             'handlers': ('console',),
+#             'level': 'DEBUG',
+#             'propagate': False,
+#         },
+#     },
+# }
