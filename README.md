@@ -7,3 +7,5 @@ News sites digest micro service
 - Introduce a duplicate filter in case different sources have the same or a similiar article, in order to only get one of them in a digest.
 - Cache average popularity from a source, latest article timestamp.
 - Error handling on serialization/deserialization, parser class selection, data retrieval, text parsing.
+- Tinker with **meaningcloud** or some other text analyzing API with Python SDK to automatically add tags to texts from sources which do not provide tags.
+- DB Cleaner for old news that didn't go into any digest for some period of time (a month perhaps?)

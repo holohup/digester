@@ -5,9 +5,10 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-CELERY_BROKER_URL = os.getenv('RABBITMQ_URL', 'amqp://guest:guest@localhost:5672/')
-
 load_dotenv(find_dotenv())
+
+CELERY_BROKER_URL = os.getenv('RABBITMQ_URL', 'amqp://guest:guest@rabbitmq:5672')
+
 SECRET_KEY = os.getenv(
     'DJANGO_SECRET_KEY',
     'django-insecure-*q(w0o75%gd&+1+%&j004qz5m!07vs*+t)x@qx11967w!wrc3w'

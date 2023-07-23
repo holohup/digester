@@ -1,8 +1,34 @@
 version: '3.8'
 
 services:
+  api:
+    build:
+      context:
+        .
+    hostname: api
+    entrypoint: python
+    command: manage.py runserver 0:8000
+    ports:
+      - "8000:8000"
+  
   rabbitmq:
     image: 'rabbitmq:3.10.25-management-alpine'
-    container_name: "rabbitmq"
+    container_name: rabbitmq
+    hostname: rabbitmq
     ports:
       - "5672:5672"
+      - "15672:15672"
+
+  worker:
+    build:
+      context: .
+    hostname: worker
+    entrypoint: celery
+    command: -A digester worker --loglevel=info
+    volumes:
+      - .:/app
+
+  # consumer:
+  #   build:
+  #     context: .
+  #   command: 'python -u api/consumer.py'

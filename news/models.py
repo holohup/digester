@@ -64,7 +64,7 @@ class Subscription(models.Model):
 
 class Post(models.Model):
     title = models.CharField('Title', max_length=100)
-    popularity = models.IntegerField('Post popularity')
+    popularity = models.IntegerField('Post popularity', default=50)
     created_at = models.DateTimeField(
         'Creation time', default=timezone.now, db_index=True
     )
