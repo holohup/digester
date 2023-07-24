@@ -42,7 +42,7 @@ These commands build a Docker image, run it, and apply migrations and preload fi
 #### 3) Set up a Python virtual environment and launch the test server.
 
 ```
-python3.11 -m venv venv && source venv/bin/activate && pip install -r requirements.txt && python manage.py migrate && python manage.py loaddata fixtures/init.json && python manage.py runserver 0:5001
+echo "RABBITMQ_URL=\"amqp://guest:guest@localhost:5672\"" >>.env && python3.11 -m venv venv && source venv/bin/activate && pip install -r requirements.txt && python manage.py migrate && python manage.py loaddata fixtures/init.json && python manage.py runserver 0:5001
 ```
 
 Launch another two terminals and execute the commands in each:
@@ -123,15 +123,15 @@ http://127.0.0.1:5001/api/digest/
 
 #### Ways to improve the app/todo
 - If the sources are changed after the digest has been formed, the latest article parsed attribute will tell lies, since now it relies on the user's subscriptions. Change to maximum from already parsed sources and make an attribute that tells when the source has been parsed last.
-- Migrate to source relative popularity instead of overall popularity by all sources, since that is what the Source model has been made for, and come up with a **brilliant** query to decrease the number of db interactions.
+- Migrate to source relative popularity instead of overall popularity by all sources, since that is what the Source model has been made for, and come up with a **brilliant** query to decrease the number of db interactions
 - Introduce a duplicate filter in case different sources have the same or a similar article, in order to only get one of them in a digest.
-- Cache average popularity from a source, latest article timestamp.
-- Error handling on serialization/deserialization, parser class selection, data retrieval, and text parsing.
-- Tinker with **meaningcloud** or some other text analyzing API with Python SDK to automatically add tags to texts from sources that do not provide tags.
+- Cache average popularity from a source, latest article timestamp
+- Error handling on serialization/deserialization, parser class selection, data retrieval, and text parsing
+- Tinker with **meaningcloud** or some other text analyzing API with Python SDK to automatically add tags to texts from sources that do not provide tags
 - DB Cleaner for old news that didn't go into any digest for some period of time (a month perhaps?)
-- Make an abstract parser class with abstract methods - take common logic to common methods.
-- Make Django admin more beautiful using inlines, query searches, etc, and optimize queries.
+- Make an abstract parser class with abstract methods - take common logic to common methods
+- Make Django admin more beautiful using inlines, query searches, etc, and optimize queries
 - Make endpoints for subscriptions management, interests, tags
 - Implement some kind of authentication (JWT?)
-- Place business logic in a single place :(
-- Pagination/filtering when a number of digests grow
+- Place business logic in a single place
+- Pagination/filtering when a number of digests grows
