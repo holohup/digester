@@ -13,7 +13,7 @@ When it updates the news, it automatically creates tags that are not in the data
 
 After creating a new digest, the app sends a message to the 'parser' RabbitMQ queue with a relative link to an endpoint with the digest, to be used by the frontend.
 
-The app connects to an SQLite database since we're currently not planning any sort of high loads, however, a switch to PostgreSQL can be done easily if needed. 
+The app connects to an SQLite database since we're currently not planning any sort of high loads, however, a switch to PostgreSQL can be done easily if needed. The app is provided with some preinstalled fixtures (optional, but highly recommended): a user, some news, tags, subscriptions, sources and a digest.
 
 ### Installation
 
@@ -21,36 +21,46 @@ There're *three ways* to get to know this project better.
 
 #### 1) Take a look
 
-Its latest version is already running on an AWS server by the URL http://ondeletecascade.ru:8000/api/ and every action can be performed there. The instance will keep running for some time, but no guarantees on how long it will last.
+Its latest version is already running http://ondeletecascade.ru:5001/ and every action can be performed there, the fixtures are preloaded. The instance will keep running for some time, but no guarantees on how long it will last.
 
 You can also copy the project and run it on your PC or server:
 
 ```
-git clone https://github.com/holohup/can_do.git && cd can_do/backend
+git clone https://github.com/holohup/digester.git && cd digester && mv .env.sample .env
 ```
 After that, there're two options:
 
 #### 2) Run in a Docker container
 
 ```
-git clone https://github.com/holohup/digester.git && cd digester && mv .env.sample .env && docker-compose build && docker-compose up -d && docker exec -it -u root $(docker ps -aqf "name=^digester_api$") sh ./init.sh
+docker-compose build && docker-compose up -d && docker exec -it -u root $(docker ps -aqf "name=^digester_api$") sh ./init.sh
 ```
+(from the digester directory)
 
-These commands build a Docker image, run it, apply migrations, collect static files and preload fixtures for the project to become more substantial right away.
+These commands build a Docker image, run it, apply migrations and preload fixtures for the project to become more substantial right away.
 
 #### 3) Set up a Python virtual environment and launch the test server.
 
 ```
-python3.11 -m venv venv && source venv/bin/activate && pip install -r requirements.txt && python manage.py migrate && python manage.py loaddata fixtures/initial.json && cp .env.sample .env && python manage.py runserver
+python3.11 -m venv venv && source venv/bin/activate && pip install -r requirements.txt && python manage.py migrate && python manage.py loaddata fixtures/initial.json && python manage.py runserver
 ```
 
-> *If you don't want the fixtures to be preloaded, skip the **loaddata** command. Then you would need to create an admin*:
+Launch another two terminals and execute the commands in each:
+```
+source venv/bin/activate && celery -A digester worker -l debug
+```
+
+```
+docker run -p 5672:5672 -p 15672:15672 rabbitmq:3.10.25-management-alpine
+```
+
+> *If you don't want the fixtures to be preloaded in either of those ways, skip the **loaddata** command. Then you would need to create an admin*:
 
 ```
 python manage.py createsuperuser
 ```
 
-**That's it!** After either step, the **Can Do API** will become available by the address http://127.0.0.1:8000/api/. From here on, the API links will be provided to this address, however, feel free to use the *ondeletecascade*.ru version.
+**That's it!** After either step, the **Digester** will become available by the address http://127.0.0.1:5001/api/. From here on, the API links will be provided to this address, however, feel free to use the *ondeletecascade*.ru version.
 
 ### Usage
 
