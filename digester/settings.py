@@ -16,7 +16,7 @@ SECRET_KEY = os.getenv(
 
 DEBUG = strtobool(os.getenv('DJANGO_DEBUG_MODE', 'False'))
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['ondeletecascade.ru', 'localhost', '127.0.0.1']
 
 
 # Application definition
