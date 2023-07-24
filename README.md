@@ -122,9 +122,9 @@ http://127.0.0.1:5001/api/digest/
 ### Final words
 
 #### Ways to improve the app/todo
-- If the sources are changed after the digest has been formed, the latest article parsed attribute will tell lies, since now it relies on the user's subscriptions. Change to maximum from already parsed sources and make an attribute that tells when the source has been parsed last.
+- If the sources are changed after the digest has been formed, the latest article parsed attribute will tell lies, since now it relies on the user's subscriptions. Change to maximum from already parsed sources and make an attribute that tells when the source has been parsed last
 - Migrate to source relative popularity instead of overall popularity by all sources, since that is what the Source model has been made for, and come up with a **brilliant** query to decrease the number of db interactions
-- Introduce a duplicate filter in case different sources have the same or a similar article, in order to only get one of them in a digest.
+- Introduce a duplicate filter in case different sources have the same or a similar article, in order to only get one of them in a digest
 - Cache average popularity from a source, latest article timestamp
 - Error handling on serialization/deserialization, parser class selection, data retrieval, and text parsing
 - Tinker with **meaningcloud** or some other text analyzing API with Python SDK to automatically add tags to texts from sources that do not provide tags
@@ -135,3 +135,4 @@ http://127.0.0.1:5001/api/digest/
 - Implement some kind of authentication (JWT?)
 - Place business logic in a single place
 - Pagination/filtering when a number of digests grows
+- Increase test coverage
