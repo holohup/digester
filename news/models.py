@@ -57,10 +57,7 @@ class Subscription(models.Model):
     )
 
     def __str__(self) -> str:
-        subscribed_users = ', '.join(
-            str(user) for user in self.subscribers.all()
-        )
-        return f'{subscribed_users} subscription on {self.source}'
+        return f'{self.subscriber} subscription on {self.source}'
 
     class Meta:
         unique_together = ('source', 'subscriber',)
@@ -89,6 +86,7 @@ class Post(models.Model):
 
     class Meta:
         ordering = ('-created_at',)
+
 
 class Digest(models.Model):
     reader = models.ForeignKey(

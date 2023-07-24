@@ -7,9 +7,9 @@ services:
         .
     hostname: api
     entrypoint: python
-    command: manage.py runserver 0:8000
+    command: manage.py runserver 0:5001
     ports:
-      - "8000:8000"
+      - "5001:5001"
   
   rabbitmq:
     image: 'rabbitmq:3.10.25-management-alpine'
@@ -17,7 +17,6 @@ services:
     hostname: rabbitmq
     ports:
       - "5672:5672"
-      - "15672:15672"
 
   worker:
     build:
@@ -27,8 +26,3 @@ services:
     command: -A digester worker --loglevel=info
     volumes:
       - .:/app
-
-  # consumer:
-  #   build:
-  #     context: .
-  #   command: 'python -u api/consumer.py'
