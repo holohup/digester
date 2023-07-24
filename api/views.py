@@ -20,14 +20,16 @@ def generate_digest(request, pk):
         SourceInfo(source.parser_class, source.pk)
         for source in reader.subscription_sources
     ]
+    new_digest_id = new_digest.id
     parse_news.delay(
         sources_to_parse,
         reader.latest_article_parsed or datetime(1, 1, 1, tzinfo=MOSCOW_ZONE),
+        new_digest_id
     )
     return Response(
         {
             'message': 'Digest creation has started. '
-            f'Digest id = {new_digest.pk}'
+            f'Digest id = {new_digest_id}'
         }
     )
 

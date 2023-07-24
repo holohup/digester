@@ -9,3 +9,8 @@ News sites digest micro service
 - Error handling on serialization/deserialization, parser class selection, data retrieval, text parsing.
 - Tinker with **meaningcloud** or some other text analyzing API with Python SDK to automatically add tags to texts from sources which do not provide tags.
 - DB Cleaner for old news that didn't go into any digest for some period of time (a month perhaps?)
+- Make an abstract parser class with abstractmethods - take common logic to common methods.
+- Make Django admin more beautiful using inlines, query searches, etc, optimize queries.
+- Make endpoints for subscriptions management, interests, tags
+- Implement some kind of authentication (JWT?)
+- Place business logic to a single place :(

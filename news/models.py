@@ -49,10 +49,11 @@ class Subscription(models.Model):
         verbose_name='News source',
         related_name='subscriptions',
     )
-    subscribers = models.ManyToManyField(
+    subscriber = models.ForeignKey(
         User,
-        verbose_name='Subscribers to the source',
+        verbose_name='Subscriber to the source',
         related_name='subscriptions',
+        on_delete=models.CASCADE
     )
 
     def __str__(self) -> str:
@@ -60,6 +61,9 @@ class Subscription(models.Model):
             str(user) for user in self.subscribers.all()
         )
         return f'{subscribed_users} subscription on {self.source}'
+
+    class Meta:
+        unique_together = ('source', 'subscriber',)
 
 
 class Post(models.Model):
@@ -83,6 +87,8 @@ class Post(models.Model):
     def __str__(self) -> str:
         return self.title
 
+    class Meta:
+        ordering = ('-created_at',)
 
 class Digest(models.Model):
     reader = models.ForeignKey(
