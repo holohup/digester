@@ -6,6 +6,7 @@ services:
       context:
         .
     hostname: api
+    container_name: digester_api
     entrypoint: python
     command: manage.py runserver 0:5001
     ports:
@@ -17,6 +18,7 @@ services:
     hostname: rabbitmq
     ports:
       - "5672:5672"
+      - "15672:15672"
 
   worker:
     build:

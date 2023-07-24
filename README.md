@@ -33,6 +33,7 @@ After that, there're two options:
 #### 2) Run in a Docker container
 
 ```
+git clone https://github.com/holohup/digester.git && cd digester && mv .env.sample .env && docker-compose build && docker-compose up -d && docker-compose exec -it -u root digester_api sh ./init.sh 
 docker build . -t can_do && docker run -d -p 8000:8000 --name can_do can_do && docker exec -it -u root $(docker ps -aqf "name=^can_do$") sh ./init.sh
 ```
 
