@@ -1,7 +1,8 @@
-from distutils.util import strtobool
-from dotenv import find_dotenv, load_dotenv
 import os
+from distutils.util import strtobool
 from pathlib import Path
+
+from dotenv import find_dotenv, load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -64,20 +65,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'digester.wsgi.application'
 
-
-# Database
-# https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
-
-# Password validation
-# https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -94,10 +87,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
-# Internationalization
-# https://docs.djangoproject.com/en/4.2/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
@@ -106,15 +95,8 @@ USE_I18N = True
 
 USE_TZ = True
 
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/4.2/howto/static-files/
-
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles/')
-
-# Default primary key field type
-# https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -125,34 +107,3 @@ REST_FRAMEWORK = {
 }
 
 AUTH_USER_MODEL = 'news.User'
-
-# LOGGING = {
-#     'version': 1,
-#     'disable_existing_loggers': True,
-#     'formatters': {
-#         'formatter': {
-#             '()': 'django.utils.log.ServerFormatter',
-#             'format': '[%(name)s %(asctime)s %(filename)s: %(lineno)d - %(funcName)s()] %(message)s',
-#             'datefmt': '%Y-%m-%d %H:%M:%S',
-#         }
-#     },
-#     'handlers': {
-#         'console': {
-#             'level': 'DEBUG',
-#             'class': 'logging.StreamHandler',
-#             'formatter': 'formatter',
-#         },
-#     },
-#     'loggers': {
-#         'django': {
-#             'handlers': ('console',),
-#             'level': 'INFO',
-#             'propagate': False,
-#         },
-#         'django.db.backends': {
-#             'handlers': ('console',),
-#             'level': 'DEBUG',
-#             'propagate': False,
-#         },
-#     },
-# }

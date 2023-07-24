@@ -1,9 +1,13 @@
-from news.models import Digest, Post
-from django.db.models import Avg
 from datetime import datetime
+
+from django.db.models import Avg
+
+from news.models import Digest, Post
 
 
 def fill_digest(digest_id: int) -> None:
+    """Prepares the digest based on filters from the task."""
+
     digest = Digest.objects.get(id=digest_id)
     user = digest.reader
     qs = Digest.objects.all()

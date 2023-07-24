@@ -1,17 +1,21 @@
-from celery import shared_task
 from datetime import datetime
 from importlib import import_module
-from api.producer import publish_to_rabbitmq
+
+from celery import shared_task
 from celery.signals import task_success
 from django.db import transaction
-from api.helpers import SourceInfo
-from news.models import Post, Tag
-from api.utils import fill_digest
 from rest_framework.reverse import reverse
+
+from api.helpers import SourceInfo
+from api.producer import publish_to_rabbitmq
+from api.utils import fill_digest
+from news.models import Post, Tag
 
 
 @shared_task
 def parse_news(sources: list, last_timestamp: datetime, new_digest_id: int):
+    """Parses news using the class names from sources."""
+
     sources_to_parse = [SourceInfo(*src) for src in sources]
     module = import_module('api.parsers')
     result = {}
@@ -28,6 +32,8 @@ def parse_news(sources: list, last_timestamp: datetime, new_digest_id: int):
 
 
 def create_posts_with_tags(source_id, posts):
+    """Serializers dictionaries to posts."""
+
     with transaction.atomic():
         for post in posts:
             post_tags = post.pop('tags')
@@ -44,6 +50,8 @@ def create_posts_with_tags(source_id, posts):
 
 @task_success.connect(sender=parse_news)
 def finish_digest_creation(sender, result, **kwargs):
+    """Finishes the job creating posts, the digest and sending the message."""
+
     res, new_digest_id = result
     if not res:
         publish_to_rabbitmq(

@@ -1,12 +1,15 @@
+from datetime import datetime, timezone
+from random import randint
+from urllib.parse import urljoin
+
 import feedparser
 import httpx
-from datetime import datetime, timezone
 from bs4 import BeautifulSoup
-from urllib.parse import urljoin
-from random import randint
 
 
 def random_popularity():
+    """Used to prepopulate popularity for parsers which can't read js."""
+
     return randint(0, 100)
 
 
@@ -121,7 +124,8 @@ class RBCParser:
 
 
 class IXBTParser:
-    """IXBT Parser class."""
+    """IXBT Parser class.
+    Popularity is based upon the amount of comments and the article age."""
 
     time_format = '%a, %d %b %Y %H:%M:%S %z'
 

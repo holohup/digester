@@ -1,13 +1,10 @@
-from django.conf import settings
 from celery import shared_task
+from django.conf import settings
 from kombu import Connection, Queue
 
 
 @shared_task
-def publish_to_rabbitmq(
-    method,
-    body,
-):
+def publish_to_rabbitmq(method, body):
     exchange = ''
     routing_key = 'parser'
 

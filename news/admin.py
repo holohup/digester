@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.models import Group
 
-from news.models import Digest, Post, Subscription, Tag, User, Source
+from news.models import Digest, Post, Source, Subscription, Tag, User
 
 admin.site.unregister(Group)
 

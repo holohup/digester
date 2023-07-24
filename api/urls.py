@@ -1,7 +1,7 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
-from api.views import generate_digest, DigestViewSet
+from api.views import DigestViewSet, generate_digest
 
 router = DefaultRouter()
 router.register('digest', DigestViewSet, basename='digests')

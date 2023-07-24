@@ -1,6 +1,6 @@
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils import timezone
-from django.contrib.auth.models import AbstractUser
 
 
 class Tag(models.Model):
@@ -32,6 +32,8 @@ class User(AbstractUser):
 
 
 class Source(models.Model):
+    """A source model to be able to add new parsers and gather statistics."""
+
     title = models.CharField('News Site Title', max_length=100)
     url = models.URLField('News site URL')
     parser_class = models.CharField(
@@ -43,6 +45,8 @@ class Source(models.Model):
 
 
 class Subscription(models.Model):
+    """User subscription on a source."""
+
     source = models.ForeignKey(
         Source,
         on_delete=models.CASCADE,
@@ -64,6 +68,8 @@ class Subscription(models.Model):
 
 
 class Post(models.Model):
+    """Post related to tags and source."""
+
     title = models.CharField('Title', max_length=100)
     popularity = models.IntegerField('Post popularity', default=50)
     created_at = models.DateTimeField(
@@ -89,6 +95,8 @@ class Post(models.Model):
 
 
 class Digest(models.Model):
+    """Digest for a specific reader with post."""
+
     reader = models.ForeignKey(
         User,
         on_delete=models.CASCADE,

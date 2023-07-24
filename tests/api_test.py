@@ -1,7 +1,8 @@
+import pytest
 from rest_framework import status
 from rest_framework.reverse import reverse
+
 from news.models import Digest, User
-import pytest
 
 
 def test_api_is_available(client):
