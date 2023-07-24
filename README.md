@@ -64,103 +64,60 @@ python manage.py createsuperuser
 
 ### Usage
 
-1) Edit Sources
-2) Edit subscriptions
-3) Interests can be selected in Django admin on the user's page
+1) Edit Sources. In the admin panel you can add as much sources as you wish. However, in order to work properly, they need to have a Parser Class provided. The fixtures include currently working parsers, but feel free to write your own. The parser should receive a time-aware timestamp upon activation to look only for the news, it should provide a method parse() and return the result in a .result property or variable.
+2) Edit subscriptions. In order to parse the sources, add the subscription to the user of your choice.
+3) Interests can be edited in Django admin on the user's page.
 
-The Django admin panel is located at http://127.0.0.1:8000/admin/. The preloaded fixtures provide two already registered users:
+The Django admin panel is located at http://127.0.0.1:5001/admin/. The preloaded fixtures provide an already registered user:
 
 **admin** / **admin** (an admin :)
-**leo** / **shmleoleo** (an ordinary user)
 
-If you have skipped the fixture preloading, create an admin and a user of your choice using the Django admin, or the new user registration endpoint: http://127.0.0.1:8000/api/auth/users/. It requires a simple JSON:
-```json
-{
-    "username": "alexey",
-    "password": "shmalexei"
-}
+If you have skipped the fixture preloading, create an admin and a user of your choice using the command:
 ```
-If everything went **OK** and the password was not too short and didn't look at all like the username, you'll get the user registration confirmation:
-```json
-{
-    "email": "",
-    "username": "alexey",
-    "id": 3
-}
+python manage.py createsuperuser
 ```
-You would also need a JWT Token. Send the same username/password JSON combo POST request to http://127.0.0.1:8000/api/auth/jwt/create/ and you'll receive a response that looks similar to:
-```json
-{
-    "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTY4OTMxNzczNCwiaWF0IjoxNjg5MjMxMzM0LCJqdGkiOiI4ZDVmYTAxZTc3OGI0Yjc1YmYxYjY3MjMwYzZlMTEzZiIsInVzZXJfaWQiOjN9.eFH82eZvzNtbBUpKaXAoXltdFb3w_jOcVdU7U3rXbhc",
-    "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjkxODIzMzM0LCJpYXQiOjE2ODkyMzEzMzQsImp0aSI6IjczMzkwOTJhZDdlNDRmYWY5ZDczYzRjZWJmZGMwN2EzIiwidXNlcl9pZCI6M30.koJbtDboe8fQsqQNgY_LyHZsi4fqJ2cWdwRHBvAu2Us"
-}
-```
-Now copy the "access" key to your favorite program (I use **Postman** and highly recommend it) to use it (**Bearer** in the headers) and enjoy the API.
-
 
 ### Endpoints
 
-#### Create a new todo item
+#### Start digest creation
 
-POST to http://127.0.0.1:8000/api/tasks/
+GET to http://127.0.0.1:5001/api/generate/<user_id> (which is 1 in fixtures - if you have preloaded them, the url would be http://127.0.0.1:5001/api/generate/1/). The request can be done in a browser.
+
+You'll get a response with the id of a digest being generated, something like:
 ```json
 {
-    "title": "Feed the dog",
-    "description": "He likes chicken sausages",
-    "done": false
+    "message": "Digest creation has started. Digest id = 5"
 }
 ```
-Only the title field is required, but you can provide extra details in the other fields if you want. The response will contain the new task id.
 
-#### Modify an existing to-do item.
+Use this id to fetch the digest when it's ready.
 
-Use the id from the previous step to modify any of the fields, and send a PATCH request with modified JSON from the previous step to http://127.0.0.1:8000/api/tasks/{task_id}
+#### Get the digest.
 
-#### Get a list of your tasks.
-
-Since you're authorized via the JWT token, you can get a list of your tasks. Send a GET request to http://127.0.0.1:8000/api/tasks/
-
-You can also get all of your task id's from that list.
-
-#### Get your user info.
-
-Simple information about the authorized user (according to the token) - email, username, and id.
-Send a GET request to http://127.0.0.1:8000/api/auth/users/me/
-
-#### Refresh your token
-
-The current token TTL is set to 30 days. If you ever feel the need to refresh it, you need to send a POST request with JSON that looks like this:
+Use the id from the previous step to send a GET to http://127.0.0.1:5001/api/digest/{task_id}.
+Fair word of warning - if no new news match the default criteria, an empty digest will still be there, but the message sent to RabbitMQ will inform about this. If there're news in the digest, you'll receive a response similar to:
 ```json
 {
-    "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTY4OTMxNzczNCwiaWF0IjoxNjg5MjMxMzM0LCJqdGkiOiI4ZDVmYTAxZTc3OGI0Yjc1YmYxYjY3MjMwYzZlMTEzZiIsInVzZXJfaWQiOjN9.eFH82eZvzNtbBUpKaXAoXltdFb3w_jOcVdU7U3rXbhc"
+    "id": 5,
+    "posts": [
+        {
+            "text": "text1",
+            "link": "link1"
+        },
+        {
+            "text": "text2",
+            "link": "link2"
+        },
+    ],
+    "created_at": "2023-07-24T08:50:08.841000Z"
 }
 ```
-Where "refresh" is the key you received when acquired the token. The endpoint is: http://127.0.0.1:8000/api/auth/jwt/refresh/
+You can view an example at http://ondeletecascade.ru:5001/api/digest/5/
 
-Then you would need to use the new token provided by the system.
+#### Get a list of digests.
 
+http://127.0.0.1:5001/api/digest/
 
-#### Reordering
-
-Here comes the tricky part. There's a special endpoint for reordering items. It accepts a simple JSON with a list of IDs in the new order and reorders the to-do tasks accordingly. Let's say you've got task IDs **1, 2, and 3** (you can get those from the task list endpoint). If you reorder them, they'll come in a new order once you get a new task list. To reorder, send a PATCH request to http://127.0.0.1:8000/api/tasks/reorder/ containing a simple JSON:
-
-
-```json
-{
-    "new_order": [3, 1, 2]
-}
-```
-The response either provides the new order, or reports an error (e.g. you tried to include another user's post, or didn't include some of your posts in the new order)
-
-```json
-{
-    "new_order": [
-        3,
-        1,
-        2,
-    ]
-}
-```
 
 ### Final words
 
